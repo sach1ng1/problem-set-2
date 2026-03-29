@@ -16,3 +16,35 @@ import numpy as np
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.model_selection import StratifiedKFold as KFold_strat
 from sklearn.tree import DecisionTreeClassifier as DTC
+from part2_preprocessing import preprocess_df
+from part3_logistic_regression import logistic_regression
+
+df_arrests=preprocess_df()
+df_arrests_train, df_arrests_test= logistic_regression(df_arrests)
+
+features=["current_charge_felony", "num_fel_arrests_last_year"]
+X_train=df_arrests_train[features]
+y_train=df_arrests_train["y"]
+X_test=df_arrests_test[features]
+y_test=df_arrests_test["y"]
+
+param_grid_dt={"max_depth":[5,10,15]}
+dt_model=DTC()
+gs_cv_dt=GridSearchCV(dt_model, param_grid=param_grid_dt, cv=5)
+gs_cv_dt.fit(X_train, y_train)
+
+optimal_max_depth=gs_cv_dt.best_params_["max_depth"]
+
+print (f"What was the optimal value for max_depth? {optimal_max_depth}")
+
+if optimal_max_depth == min(param_grid_dt["max_depth"]):
+    regularization="most regularization"
+elif optimal_max_depth == max(param_grid_dt["max_depth"]):
+    regularization="least regularization"
+else:
+    regularization= "middle regularization"
+print (f"Did it have the most or least regularization? Or in the middle? {regularization}")
+
+#df_arrests_test["pred_dt"]= gs_cv_dt.predict(X_test)
+
+
