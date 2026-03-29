@@ -11,15 +11,14 @@ PART 4: Decision Trees
 '''
 
 # Import any further packages you may need for PART 4
+
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.model_selection import StratifiedKFold as KFold_strat
 from sklearn.tree import DecisionTreeClassifier as DTC
 
-
 def decision_tree(df_arrests_train, df_arrests_test):
-
     features=["current_charge_felony", "num_fel_arrests_last_year"]
     X_train=df_arrests_train[features]
     y_train=df_arrests_train["y"]
@@ -44,10 +43,11 @@ def decision_tree(df_arrests_train, df_arrests_test):
     print (f"Did it have the most or least regularization? Or in the middle? {regularization}")
 
     df_arrests_test["pred_dt"]= gs_cv_dt.predict(X_test)
-    
+
     df_arrests_train.to_csv("data/df_arrests_train.csv", index=False)
     df_arrests_test.to_csv("data/df_arrests_test.csv", index=False)
     
-    return df_arrests_train, df_arrests_test
+
+
 
 
