@@ -17,10 +17,26 @@ PART 2: Pre-processing
 '''
 
 # import the necessary packages
+import pandas as pd
+import numpy as np
+
+
+arrest_events_df=pd.read_csv("data/arrest_events_raw.csv")
+pred_universe_df=pd.read_csv("data/pred_universe_raw.csv")
+arrest_events_df["arrest_date_event"]=pd.to_datetime(arrest_events_df["arrest_date_event"])
+pred_universe_df["arrest_date_univ"]=pd.to_datetime(pred_universe_df["arrest_date_univ"])
+df_arrests=pd.merge(arrest_events_df, pred_universe_df, how="outer", on="person_id")
+
+print(df_arrests.head())
+print(df_arrests.info())
 
 
 
-# Your code here
+
+
+    
+    
+    
 
 
 
