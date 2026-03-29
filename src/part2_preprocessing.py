@@ -27,8 +27,36 @@ arrest_events_df["arrest_date_event"]=pd.to_datetime(arrest_events_df["arrest_da
 pred_universe_df["arrest_date_univ"]=pd.to_datetime(pred_universe_df["arrest_date_univ"])
 df_arrests=pd.merge(arrest_events_df, pred_universe_df, how="outer", on="person_id")
 
-print(df_arrests.head())
-print(df_arrests.info())
+#print(df_arrests.head())
+#print(df_arrests.info())
+
+y_felony=[]
+
+for index, arrest in df_arrests.iterrows():
+    arrested_person= arrest["person_id"]
+    arrest_date= arrest["arrest_date_univ"]
+    
+    rearrested= df_arrests[(df_arrests["person_id"]==arrested_person) & (df_arrests["arrest_date_event"]> arrest_date)&
+    (df_arrests["arrest_date_event"]<=arrest_date + pd.DateOffset(years=1)) & (df_arrests["charge_degree"]=="felony")]
+    
+    if len(rearrested)>0:
+        y_felony.append(1)
+    else:
+        y_felony.append(0)
+        
+#print(y_felony)     
+        
+df_arrests["y"]=y_felony
+    
+print(f"What share of arrestees in the `df_arrests` table were rearrested for a felony crime in the next year? {df_arrests['y'].mean()}")
+
+current_arrests=[]  
+    
+for index, arrest in df_arrests.iterrows():
+    
+    
+    
+    
 
 
 
