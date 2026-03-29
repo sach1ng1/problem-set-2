@@ -19,7 +19,41 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.model_selection import StratifiedKFold as KFold_strat
 from sklearn.linear_model import LogisticRegression as lr
 
+from part2_preprocessing import preprocess_df
 
-# Your code here
+df_arrests=preprocess_df()
+
+df_arrests_train,df_arrests_test=train_test_split(df_arrests, test_size=0.3, shuffle=True, stratify= df_arrests["y"], random_state=42)
 
 
+features=["current_charge_felony", "num_fel_arrests_last_year"] 
+
+X_train=df_arrests_train[features]
+y_train=df_arrests_train["y"]
+
+X_test=df_arrests_test[features]
+y_test=df_arrests_test["y"]
+
+param_grid={"C":[0.05, 0.5, 1]}
+
+lr_model=lr()
+gs_cv=GridSearchCV(lr_model, param_grid=param_grid, cv=5)
+gs_cv.fit(X_train, y_train)
+
+optimal_c=gs_cv.best_params_["C"]
+print(f"What was the optimal value for C? {optimal_c}")
+
+if optimal_c == min(param_grid["C"]):
+    regularization= "most regularization"
+elif optimal_c == max(param_grid["C"]):
+    regularization="least regularization"
+else:
+    regularization="middle regularization"
+    
+print(f"Did it have the most or least regularization? Or in the middle? {regularization}")
+
+df_arrests_test["pred_lr"]=gs_cv.predict(X_test)
+
+    
+    
+    

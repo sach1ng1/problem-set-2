@@ -77,7 +77,7 @@ def preprocess_df():
 
     print(f"What is the average number of felony arrests in the last year? {df_arrests["num_fel_arrests_last_year"].mean()}")
 
-    print(df_arrests.head())
+    print(pred_universe_df.head())
     return df_arrests
 
 
