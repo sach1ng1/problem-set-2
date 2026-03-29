@@ -13,6 +13,15 @@ pred_universe_raw.drop(columns=['filing_date'], inplace=True)
 arrest_events_raw.drop(columns=['filing_date'], inplace=True)
 
 def savedata():
+    """
+    Saves arrest datasets as csv files to be used in preprocess for modeling
+
+    Returns:
+        pred_universe_raw:
+        dataframe for  person arrest description data 
+        arrest_events_raw:
+        dataframe for arrest event charge description data
+    """    
 # Inject and save both data frames to `data/` -> 'pred_universe_raw.csv', 'arrest_events_raw.csv'
     pred_universe_raw.to_csv("data/pred_universe_raw.csv", index=False)
     arrest_events_raw.to_csv("data/arrest_events_raw.csv", index= False)

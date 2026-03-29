@@ -21,6 +21,13 @@ import pandas as pd
 import numpy as np
 
 def preprocess_df():
+    """Preprocesses data to identify individuals with felony charges to prepare for modeling
+
+    Returns:
+        df_arrests:
+            merged and preprocessed dataframe of arrests_events_raw and pred_universe_raw dataframes containing arrest event and individual descriptions
+            
+    """    
 
     arrest_events_df=pd.read_csv("data/arrest_events_raw.csv")
     pred_universe_df=pd.read_csv("data/pred_universe_raw.csv")

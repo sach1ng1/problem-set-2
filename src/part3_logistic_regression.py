@@ -20,6 +20,18 @@ from sklearn.model_selection import StratifiedKFold as KFold_strat
 from sklearn.linear_model import LogisticRegression as lr
 
 def logistic_regression(df_arrests):
+    """ Initiates and runs the logistic regression model from the merged arrest data
+
+    Parameter:
+        df_arrests: dataframe
+            The merged and preprocessed arrest event and individual description data
+    
+    Returns:
+        df_arrests_train:
+            dataframe with the train data for arrests
+        df_arrests_test:
+            dataframe with the test data for arrests
+    """    
     df_arrests_train,df_arrests_test=train_test_split(df_arrests, test_size=0.3, shuffle=True, stratify= df_arrests["y"], random_state=42)
 
 

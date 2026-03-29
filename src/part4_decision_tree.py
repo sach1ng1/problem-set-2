@@ -19,6 +19,17 @@ from sklearn.model_selection import StratifiedKFold as KFold_strat
 from sklearn.tree import DecisionTreeClassifier as DTC
 
 def decision_tree(df_arrests_train, df_arrests_test):
+    """ Initates and runs the decision tree model for the arrests data
+
+    Parameters:
+        df_arrests_train:dataframe
+            The training arrests data 
+        
+        df_arrests_test: dataframe
+            The testing arrests data
+    Returns:
+        None
+    """    
     features=["current_charge_felony", "num_fel_arrests_last_year"]
     X_train=df_arrests_train[features]
     y_train=df_arrests_train["y"]
