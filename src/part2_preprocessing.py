@@ -20,40 +20,71 @@ PART 2: Pre-processing
 import pandas as pd
 import numpy as np
 
+def preprocess_df():
 
-arrest_events_df=pd.read_csv("data/arrest_events_raw.csv")
-pred_universe_df=pd.read_csv("data/pred_universe_raw.csv")
-arrest_events_df["arrest_date_event"]=pd.to_datetime(arrest_events_df["arrest_date_event"])
-pred_universe_df["arrest_date_univ"]=pd.to_datetime(pred_universe_df["arrest_date_univ"])
-df_arrests=pd.merge(arrest_events_df, pred_universe_df, how="outer", on="person_id")
+    arrest_events_df=pd.read_csv("data/arrest_events_raw.csv")
+    pred_universe_df=pd.read_csv("data/pred_universe_raw.csv")
+    arrest_events_df["arrest_date_event"]=pd.to_datetime(arrest_events_df["arrest_date_event"])
+    pred_universe_df["arrest_date_univ"]=pd.to_datetime(pred_universe_df["arrest_date_univ"])
+    df_arrests=pd.merge(arrest_events_df, pred_universe_df, how="outer", on="person_id")
 
-#print(df_arrests.head())
-#print(df_arrests.info())
+    #print(df_arrests.head())
+    #print(df_arrests.info())
 
-y_felony=[]
+    y_felony=[]
 
-for index, arrest in df_arrests.iterrows():
-    arrested_person= arrest["person_id"]
-    arrest_date= arrest["arrest_date_univ"]
-    
-    rearrested= df_arrests[(df_arrests["person_id"]==arrested_person) & (df_arrests["arrest_date_event"]> arrest_date)&
-    (df_arrests["arrest_date_event"]<=arrest_date + pd.DateOffset(years=1)) & (df_arrests["charge_degree"]=="felony")]
-    
-    if len(rearrested)>0:
-        y_felony.append(1)
-    else:
-        y_felony.append(0)
+    for index, arrest in df_arrests.iterrows():
+        arrested_person= arrest["person_id"]
+        arrest_date= arrest["arrest_date_univ"]
         
-#print(y_felony)     
+        rearrested= df_arrests[(df_arrests["person_id"]==arrested_person) & (df_arrests["arrest_date_event"]> arrest_date)&
+        (df_arrests["arrest_date_event"]<=arrest_date + pd.DateOffset(years=1)) & (df_arrests["charge_degree"]=="felony")]
         
-df_arrests["y"]=y_felony
-    
-print(f"What share of arrestees in the `df_arrests` table were rearrested for a felony crime in the next year? {df_arrests['y'].mean()}")
+        if len(rearrested)>0:
+            y_felony.append(1)
+        else:
+            y_felony.append(0)
+            
+    #print(y_felony)     
+            
+    df_arrests["y"]=y_felony
+        
+    print(f"What share of arrestees in the `df_arrests` table were rearrested for a felony crime in the next year? {df_arrests['y'].mean()}")
 
-current_arrests=[]  
-    
-for index, arrest in df_arrests.iterrows():
-    
+    felony_charges=[]  
+        
+    for index, arrest in df_arrests.iterrows():
+        if arrest["charge_degree"]== "felony":
+            felony_charges.append(1)
+        else:
+            felony_charges.append(0)
+    #print(current_arrests)
+    df_arrests["current_charge_felony"] =felony_charges
+
+    print(f"What share of current charges are felonies? {df_arrests["current_charge_felony"].mean()}")
+
+    past_arrests=[]
+
+    for index, arrest in df_arrests.iterrows():
+        arrested_person= arrest["person_id"]
+        arrest_date= arrest["arrest_date_univ"]
+        
+        past_felonies=df_arrests[(df_arrests["person_id"]==arrested_person)& (df_arrests["arrest_date_event"]<arrest_date)&
+        (df_arrests["arrest_date_event"]>=arrest_date-pd.DateOffset(years=1))& (df_arrests["charge_degree"]=="felony")]
+        past_arrests.append(len(past_felonies))
+
+    df_arrests["num_fel_arrests_last_year"]= past_arrests
+
+    print(f"What is the average number of felony arrests in the last year? {df_arrests["num_fel_arrests_last_year"].mean()}")
+
+    print(df_arrests.head())
+    return df_arrests
+
+
+
+
+
+
     
     
     
